@@ -4,12 +4,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';
 import {
   LayoutDashboard, Users, Settings, LogOut,
-  Bot, ChevronLeft, ChevronRight, Menu, X,
+  Bot, ChevronLeft, ChevronRight, Menu, History,
 } from 'lucide-react';
 
 const NAV_ITEMS = [
   { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { path: '/agents',    label: 'Agentes',   icon: Bot },
+  { path: '/history',   label: 'Histórico', icon: History },
   { path: '/team',      label: 'Equipe',    icon: Users },
   { path: '/settings',  label: 'Config.',   icon: Settings },
 ];
