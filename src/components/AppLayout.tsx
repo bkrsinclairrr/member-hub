@@ -5,15 +5,37 @@ import { useAuth } from '@/hooks/useAuth';
 import {
   LayoutDashboard, Users, Settings, LogOut,
   Bot, ChevronLeft, ChevronRight, Menu, History,
+  Cpu, MessageSquare, Activity,
 } from 'lucide-react';
 
-const NAV_ITEMS = [
-  { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { path: '/agents',    label: 'Agentes',   icon: Bot },
-  { path: '/history',   label: 'Histórico', icon: History },
-  { path: '/team',      label: 'Equipe',    icon: Users },
-  { path: '/settings',  label: 'Config.',   icon: Settings },
+const NAV_SECTIONS = [
+  {
+    title: 'PLATAFORMA',
+    items: [
+      { path: '/dashboard',     label: 'Dashboard',     icon: LayoutDashboard },
+      { path: '/orchestrator',  label: 'Orquestrador',  icon: Cpu },
+      { path: '/agents',        label: 'Agentes',       icon: Bot },
+      { path: '/chat',          label: 'Chat',          icon: MessageSquare },
+      { path: '/history',       label: 'Histórico',     icon: History },
+    ],
+  },
+  {
+    title: 'SISTEMA',
+    items: [
+      { path: '/monitor',  label: 'Monitor',  icon: Activity },
+    ],
+  },
+  {
+    title: 'CONTA',
+    items: [
+      { path: '/team',     label: 'Equipe',   icon: Users },
+      { path: '/settings', label: 'Config.',  icon: Settings },
+    ],
+  },
 ];
+
+// Flat list for mobile / collapsed icon rendering
+const ALL_NAV_ITEMS = NAV_SECTIONS.flatMap(s => s.items);
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   const { user, signOut } = useAuth();
@@ -47,25 +69,55 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 p-3 space-y-1">
-        {NAV_ITEMS.map(({ path, label, icon: Icon }) => {
-          const active = location.pathname === path;
-          return (
-            <Link
-              key={path}
-              to={path}
-              onClick={() => setMobileOpen(false)}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all ${
-                active
-                  ? 'bg-purple-600/20 text-purple-300 border border-purple-600/30'
-                  : 'text-gray-400 hover:text-white hover:bg-slate-800'
-              } ${collapsed && !mobile ? 'justify-center' : ''}`}
-            >
-              <Icon className="h-5 w-5 shrink-0" />
-              {(!collapsed || mobile) && <span className="text-sm font-medium">{label}</span>}
-            </Link>
-          );
-        })}
+      <nav className="flex-1 p-3 space-y-4 overflow-y-auto">
+        {(!collapsed || mobile) ? (
+          NAV_SECTIONS.map(section => (
+            <div key={section.title}>
+              <p className="px-3 mb-1 text-[10px] font-semibold text-gray-600 tracking-widest">{section.title}</p>
+              <div className="space-y-0.5">
+                {section.items.map(({ path, label, icon: Icon }) => {
+                  const active = location.pathname === path;
+                  return (
+                    <Link
+                      key={path}
+                      to={path}
+                      onClick={() => setMobileOpen(false)}
+                      className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all ${
+                        active
+                          ? 'bg-purple-600/20 text-purple-300 border border-purple-600/30'
+                          : 'text-gray-400 hover:text-white hover:bg-slate-800'
+                      }`}
+                    >
+                      <Icon className="h-5 w-5 shrink-0" />
+                      <span className="text-sm font-medium">{label}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          ))
+        ) : (
+          // Collapsed: just icons
+          <div className="space-y-1">
+            {ALL_NAV_ITEMS.map(({ path, label, icon: Icon }) => {
+              const active = location.pathname === path;
+              return (
+                <Link
+                  key={path}
+                  to={path}
+                  title={label}
+                  className={`flex items-center justify-center px-3 py-2.5 rounded-xl transition-all ${
+                    active
+                      ? 'bg-purple-600/20 text-purple-300 border border-purple-600/30'
+                      : 'text-gray-400 hover:text-white hover:bg-slate-800'
+                  }`}
+                >
+                  <Icon className="h-5 w-5" />
+                </Link>
+              );
+            })}
+          </div>
+        )}
       </nav>
 
       {/* User + Logout */}

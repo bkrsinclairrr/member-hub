@@ -13,6 +13,9 @@ import TeamPage from "./pages/TeamPage.tsx";
 import AgentsPage from "./pages/AgentsPage.tsx";
 import HistoryPage from "./pages/HistoryPage.tsx";
 import SettingsPage from "./pages/SettingsPage.tsx";
+import OrchestratorPage from "./pages/OrchestratorPage.tsx";
+import MonitorPage from "./pages/MonitorPage.tsx";
+import ChatPage from "./pages/ChatPage.tsx";
 
 const queryClient = new QueryClient();
 
@@ -56,6 +59,9 @@ const App = () => (
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/agents" element={<ProtectedRoute><AgentsPage /></ProtectedRoute>} />
           <Route path="/history" element={<ProtectedRoute><HistoryPage /></ProtectedRoute>} />
+          <Route path="/orchestrator" element={<ProtectedRoute><OrchestratorPage /></ProtectedRoute>} />
+          <Route path="/monitor" element={<ProtectedRoute><MonitorPage /></ProtectedRoute>} />
+          <Route path="/chat" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
           <Route path="/team" element={<ProtectedRoute><TeamPage /></ProtectedRoute>} />
           <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
 
