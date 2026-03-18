@@ -2,11 +2,15 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { motion } from 'framer-motion';
-import { Bot, Users, Activity, Zap, TrendingUp, Clock, AlertTriangle, RefreshCw } from 'lucide-react';
+import { Bot, Users, Activity, Zap, TrendingUp, Clock, AlertTriangle, RefreshCw, ExternalLink } from 'lucide-react';
 import { aiox, AIOXAgent, AIOXEvent } from '@/lib/aiox';
+import { supabase } from '@/lib/supabase';
+
+// AIOX Dashboard URL — update after deploying to Vercel
+const AIOX_DASHBOARD_URL = import.meta.env.VITE_AIOX_DASHBOARD_URL || '';
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user, session } = useAuth();
   const [agents, setAgents] = useState<AIOXAgent[]>([]);
   const [events, setEvents] = useState<AIOXEvent[]>([]);
   const [metrics, setMetrics] = useState<{ uptime?: number; totalExecutions?: number } | null>(null);
@@ -35,6 +39,19 @@ export default function Dashboard() {
     const id = setInterval(loadData, 5000);
     return () => clearInterval(id);
   }, []);
+
+  const handleOpenAIOX = () => {
+    if (!AIOX_DASHBOARD_URL) {
+      alert('URL do AIOX Dashboard não configurada. Defina VITE_AIOX_DASHBOARD_URL no .env.local');
+      return;
+    }
+    if (session?.access_token && session?.refresh_token) {
+      const url = `${AIOX_DASHBOARD_URL}/#access_token=${session.access_token}&refresh_token=${session.refresh_token}&type=bearer`;
+      window.open(url, '_blank', 'noopener');
+    } else {
+      window.open(AIOX_DASHBOARD_URL, '_blank', 'noopener');
+    }
+  };
 
   const activeAgents = agents.filter(a => a.status === 'active').length;
   const successRate = events.length > 0
@@ -109,6 +126,26 @@ export default function Dashboard() {
           </div>
         </div>
       </motion.div>
+
+      {/* AIOX Dashboard CTA */}
+      {AIOX_DASHBOARD_URL && (
+        <motion.button
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+          onClick={handleOpenAIOX}
+          className="w-full flex items-center justify-between bg-gradient-to-r from-green-900/40 to-emerald-900/30 border border-green-700/50 rounded-xl px-6 py-4 hover:border-green-600/60 transition group"
+        >
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">🚀</span>
+            <div className="text-left">
+              <p className="text-white font-semibold">Abrir AIOX Dashboard</p>
+              <p className="text-green-300/70 text-xs">Acesse o painel completo com 22 views, Chat, Engine, World e mais</p>
+            </div>
+          </div>
+          <ExternalLink className="h-5 w-5 text-green-400 group-hover:translate-x-1 transition-transform" />
+        </motion.button>
+      )}
 
       {/* Engine offline banner */}
       {engineOnline === false && (
