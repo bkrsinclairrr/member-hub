@@ -53,9 +53,8 @@ export const useAuth = () => {
         email,
         password,
         options: {
-          data: {
-            name,
-          },
+          data: { name },
+          emailRedirectTo: 'https://member-hub-olive.vercel.app/dashboard',
         },
       });
       if (error) throw error;
