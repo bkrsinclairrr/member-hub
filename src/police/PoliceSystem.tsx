@@ -349,7 +349,7 @@ const PoliceSystem: React.FC = () => {
   useEffect(() => {
     addLog('Sistema iniciado', 'Sessão operacional iniciada — PCSP Delegacia Digital', 'SISTEMA');
     addLog('Autenticação confirmada', 'Usuário: Sgt. Junior S. | Nível: OPERACIONAL', 'SISTEMA');
-  }, []);
+  }, [addLog]);
 
   return (
     <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
